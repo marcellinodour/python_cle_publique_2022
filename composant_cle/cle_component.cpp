@@ -63,7 +63,7 @@ class Cle
                 char hexPrivate[privateKey.length() + 1];
                 unsigned char * binPrivate;
                 unsigned char * binPublic;
-                char hexPublic[20];
+                char hexPublic[128];
                 int err;
 
 		const struct uECC_Curve_t * curves[5];
@@ -76,27 +76,18 @@ class Cle
 
                 hexStringToBin(binPrivate, hexPrivate);
 
-               /* void* hndl = dlopen("micro-ecc/component_uECC.so", RTLD_LAZY);
-		if(!hndl){
-			std::cout<<"Error, trou de bal !";
-		}
-                int (*fct) (uint8_t*, uint8_t*, uECC_Curve_t);
-
-                fct = (int (*) (uint8_t*, uint8_t*, uECC_Curve_t)) dlsym(hndl, "uECC_compute_public_key");
-
-                if (!fct(binPrivate, binPublic, curves[5])) {
-                        printf("uECC_compute_public_key() failed\n");
-                }*/
-
 		err = uECC_compute_public_key(binPrivate, binPublic, curves[0]);
 
                 binToHexString(hexPublic, binPublic, privateKey.length());           
-		std::cout << "public Key : " << hexPublic << std::endl;
 
-                return hexPublic; }
+		publicKey = std::string(hexPublic);
+		std::cout << "public Key : " << publicKey << std::endl;
+
+                return publicKey; }
 
     private:
         std::string privateKey;
+	std::string publicKey;
 };
  
 namespace py = pybind11;
